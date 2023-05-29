@@ -1,0 +1,46 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+spec:
+  revisionHistoryLimit: 3
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    spec:
+      containers:
+        - name: app
+          image: "linuxserver/readarr:develop"
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: "app-config"
+          ports:
+            - name: http
+              containerPort: 8787
+              protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: import
+              mountPath: /import
+            - name: books
+              mountPath: /books
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: data-pvc
+        - name: import
+          hostPath:
+            # this is a holdover from a not-so-well-planned media storage
+            # solution, but we'll use this because it's what the download
+            # clients use
+            path: /media/videos/import
+            type: Directory
+        - name: books
+          hostPath:
+            path: /media/books/general
+            type: Directory
+
