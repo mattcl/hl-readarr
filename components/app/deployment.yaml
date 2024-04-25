@@ -37,7 +37,7 @@ spec:
             # this is a holdover from a not-so-well-planned media storage
             # solution, but we'll use this because it's what the download
             # clients use
-            path: /mnt/media/import
+            path: /mnt/downloads/import
             type: Directory
         - name: books
           hostPath:
